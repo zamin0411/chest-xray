@@ -8,6 +8,7 @@ import (
 	"chest-xray/config"
 	"chest-xray/database"
 	"chest-xray/model"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +24,7 @@ func CheckPasswordHash(password, hash string) bool {
 func getDoctorByUsername(u string) (*model.Doctor, error) {
 	db := database.DB
 	var doctor model.Doctor
-	if err := db.Table("doctor").Where("doctor_username = ?", u).First(&doctor).Error; err != nil {
+	if err := db.Table("doctor").Where("doctor_username = ?", "Zamin").First(&doctor).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -35,13 +36,12 @@ func getDoctorByUsername(u string) (*model.Doctor, error) {
 // Login get user and password
 func Login(c *fiber.Ctx) error {
 	type LoginInput struct {
-		Username string `json:"username" xml:"username" form:"username"`
-		Password string `json:"password" xml:"password" form:"password"`
-	}
-	type DoctorData struct {
-		ID       string 
 		Username string `json:"username"`
 		Password string `json:"password"`
+	}
+	type DoctorData struct {
+		ID       string `json:"ID"`
+		Username string `json:"username"`
 	}
 	input := new(LoginInput)
 	var ud DoctorData
@@ -52,6 +52,7 @@ func Login(c *fiber.Ctx) error {
 
 	username := input.Username
 	pass := input.Password
+
 	user, err := getDoctorByUsername(username)
 
 	if err != nil {
@@ -64,13 +65,13 @@ func Login(c *fiber.Ctx) error {
 
 	if user != nil {
 		ud = DoctorData{
+			ID:       user.ID,
 			Username: user.Username,
-			Password: user.Password,
 		}
 
 	}
 
-	if pass != ud.Password {
+	if pass != user.Password {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
 	}
 

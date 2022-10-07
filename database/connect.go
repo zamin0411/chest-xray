@@ -5,6 +5,7 @@ import (
 
 	"chest-xray/config"
 	"chest-xray/model"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -24,6 +25,6 @@ func Connect() {
 	}
 
 	fmt.Println("Connection Opened to Database")
-	DB.AutoMigrate(&model.Doctor{})
+	DB.AutoMigrate(&model.Doctor{}, &model.MedicalRecord{})
 	fmt.Println("Database Migrated")
 }

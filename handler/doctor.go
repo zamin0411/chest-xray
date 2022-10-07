@@ -5,6 +5,7 @@ import (
 
 	"chest-xray/database"
 	"chest-xray/model"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"

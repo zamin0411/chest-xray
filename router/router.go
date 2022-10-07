@@ -2,6 +2,7 @@ package router
 
 import (
 	"chest-xray/handler"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -19,4 +20,9 @@ func SetupRoutes(app *fiber.App) {
 	// Doctor
 	doctor := api.Group("/doctor")
 	doctor.Get("/", handler.GetDoctors)
+
+	// Medical Record
+	record := api.Group("/record")
+	record.Get("/:name", handler.GetMedicalRecordsByDoctorName)
+
 }
