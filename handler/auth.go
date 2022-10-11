@@ -24,7 +24,7 @@ func CheckPasswordHash(password, hash string) bool {
 func getDoctorByUsername(u string) (*model.Doctor, error) {
 	db := database.DB
 	var doctor model.Doctor
-	if err := db.Table("doctor").Where("doctor_username = ?", "Zamin").First(&doctor).Error; err != nil {
+	if err := db.Table("doctor").Where("doctor_username = ?", u).First(&doctor).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -60,7 +60,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if user == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid username or password", "data": nil})
 	}
 
 	if user != nil {
@@ -72,20 +72,20 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if pass != user.Password {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid username or password", "data": nil})
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = ud.Username
-	claims["user_id"] = ud.ID
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["id"] = ud.ID
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 
 	t, err := token.SignedString([]byte(config.Config("SECRET")))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": t})
+	return c.JSON(fiber.Map{"token": t, "message": "Login successfully!", "status": "success"})
 }
