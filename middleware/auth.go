@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"chest-xray/config"
+	"chest-xray/handler"
+
 	"github.com/gofiber/fiber/v2"
-	jwtware "github.com/gofiber/jwt/v2"
+	jwtware "github.com/gofiber/jwt/v3"
 )
 
 // Protected protect routes
@@ -12,6 +14,17 @@ func Protected() fiber.Handler {
 		SigningKey:   []byte(config.Config("SECRET")),
 		ErrorHandler: jwtError,
 	})
+}
+
+func LoginWithToken() fiber.Handler {
+	return jwtware.New(jwtware.Config{
+		SigningKey:   []byte(config.Config("SECRET")),
+		ErrorHandler: loginJWtError,
+	})
+}
+
+func loginJWtError(c *fiber.Ctx, err error) error {
+	return handler.Login(c)
 }
 
 func jwtError(c *fiber.Ctx, err error) error {

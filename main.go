@@ -17,5 +17,5 @@ func main() {
 
 	database.Connect()
 	router.SetupRoutes(app)
-	log.Fatal(app.Listen(":8080"))
+	log.Fatal(app.Listen(":3000"))
 }

@@ -2,6 +2,7 @@ package router
 
 import (
 	"chest-xray/handler"
+	"chest-xray/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -15,7 +16,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// Auth
 	auth := api.Group("/auth")
-	auth.Post("/login", handler.Login)
+	auth.Post("/login", middleware.LoginWithToken(), handler.LoginWithToken)
 
 	// Doctor
 	doctor := api.Group("/doctor")

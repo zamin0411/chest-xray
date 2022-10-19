@@ -10,7 +10,7 @@ import (
 	"chest-xray/model"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -86,6 +86,10 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+	return c.JSON(fiber.Map{"token": t, "message": "Login successfully!", "status": "success", "code": c.Response().StatusCode()})
+}
 
-	return c.JSON(fiber.Map{"token": t, "message": "Login successfully!", "status": "success"})
+func LoginWithToken(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	return c.JSON(fiber.Map{"token": token.Raw, "message": "Login successfully!", "status": "success"})
 }
