@@ -4,7 +4,6 @@ import "time"
 
 type MedicalRecord struct {
 	ID                      string     `gorm:"primaryKey;column:medical_record_id"`
-	IDT                     string     `json:"id" gorm:"column:medical_record_id_text"`
 	HospitalizationDatetime *time.Time `json:"datetime" gorm:"column:medical_record_hospitalization_datetime"`
 	PresentingComplaint     string     `json:"presentingComplaint" gorm:"column:medical_record_presenting_complaint"`
 	HospitalizationStatus   string     `json:"status" gorm:"column:medical_record_hospitalization_status"`
