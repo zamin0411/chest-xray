@@ -25,6 +25,6 @@ func Connect() {
 	}
 
 	fmt.Println("Connection Opened to Database")
-	DB.AutoMigrate(&model.Doctor{}, &model.MedicalRecord{})
+	DB.AutoMigrate(&model.Doctor{}, &model.MedicalRecord{}, &model.LoginSession{}, &model.MedicalRecordSummary{}, &model.DiseaseHistory{}, &model.ClinicalExamination{}, &model.Patient{}, &model.OBJModel{}, &model.DiagnosticAnalytics{}, &model.SubclinicalExamination{}, &model.AreaDetail{})
 	fmt.Println("Database Migrated")
 }

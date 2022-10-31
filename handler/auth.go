@@ -47,7 +47,8 @@ func Login(c *fiber.Ctx) error {
 	var ud DoctorData
 	fmt.Print(c.Body())
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Error on login request", "data": err})
+		// return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Error on login request", "data": err})
+		return c.SendStatus(fiber.StatusUnprocessableEntity)
 	}
 
 	username := input.Username
@@ -56,11 +57,11 @@ func Login(c *fiber.Ctx) error {
 	user, err := getDoctorByUsername(username)
 
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Error on username", "data": err})
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Error on username", "data": err})
 	}
 
 	if user == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid username or password", "data": nil})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Invalid username or password", "data": nil})
 	}
 
 	if user != nil {
@@ -86,10 +87,37 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+
+	err = logSession(t)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
 	return c.JSON(fiber.Map{"token": t, "message": "Login successfully!", "status": "success", "code": c.Response().StatusCode()})
 }
 
 func LoginWithToken(c *fiber.Ctx) error {
 	token := c.Locals("user").(*jwt.Token)
-	return c.JSON(fiber.Map{"token": token.Raw, "message": "Login successfully!", "status": "success"})
+
+	if err := logSession(token.Raw); err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.JSON(fiber.Map{"token": token.Raw, "message": "Login successfully!", "status": "success", "code": c.Response().StatusCode()})
+}
+
+func logSession(token string) error {
+	session := model.LoginSession{
+		Token: token,
+	}
+
+	db := database.DB
+
+	if err := db.Create(&session).Error; err != nil {
+		return err
+	}
+
+	return nil
+
 }

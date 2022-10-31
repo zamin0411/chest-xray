@@ -32,3 +32,25 @@ func GetMedicalRecordsByDoctorName(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"status": "success", "message": "records found", "data": records})
 
 }
+
+func CreateMedicalRecord(c *fiber.Ctx) error {
+	db := database.DB
+	var record model.MedicalRecord
+	if err := c.BodyParser(&record); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "review your input", "data": err})
+	}
+
+	if err := db.Create(&record).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "server error", "data": err})
+	}
+
+	return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "created successfully", "data": record})
+}
+
+func GetAllMedicalRecords(c *fiber.Ctx) error {
+	db := database.DB
+	var records []model.MedicalRecord
+	db.Preload("MedicalRecordSummary").Preload("Doctors").Preload("ClinicalExamination").Preload("DiseaseHistory").Preload("Patient").Preload("SubclinicalExaminations").Preload("DiagnosticAnalytics").Find(&records)
+	return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "created successfully", "data": records})
+
+}

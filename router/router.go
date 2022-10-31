@@ -19,11 +19,19 @@ func SetupRoutes(app *fiber.App) {
 	auth.Post("/login", middleware.LoginWithToken(), handler.LoginWithToken)
 
 	// Doctor
-	doctor := api.Group("/doctor")
+	doctor := api.Group("/doctors")
 	doctor.Get("/", handler.GetDoctors)
 
 	// Medical Record
-	record := api.Group("/record")
+	record := api.Group("/records")
 	record.Get("/:name", handler.GetMedicalRecordsByDoctorName)
+	record.Post("/", handler.CreateMedicalRecord)
+	record.Get("/", handler.GetAllMedicalRecords)
+
+	// OBJ Model
+	model := record.Group("/models")
+	model.Get("/:recordId", handler.GetOBJModel)
+
+	model.Post("/", handler.SaveOBJModel)
 
 }
