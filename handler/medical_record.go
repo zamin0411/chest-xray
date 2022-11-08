@@ -51,6 +51,6 @@ func GetAllMedicalRecords(c *fiber.Ctx) error {
 	db := database.DB
 	var records []model.MedicalRecord
 	db.Preload("MedicalRecordSummary").Preload("Doctors").Preload("ClinicalExamination").Preload("DiseaseHistory").Preload("Patient").Preload("SubclinicalExaminations").Preload("DiagnosticAnalytics").Find(&records)
-	return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "created successfully", "data": records})
+	return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Successful", "data": records})
 
 }

@@ -24,7 +24,6 @@ func SetupRoutes(app *fiber.App) {
 
 	// Medical Record
 	record := api.Group("/records")
-	record.Get("/:name", handler.GetMedicalRecordsByDoctorName)
 	record.Post("/", handler.CreateMedicalRecord)
 	record.Get("/", handler.GetAllMedicalRecords)
 

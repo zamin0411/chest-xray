@@ -3,20 +3,15 @@ package handler
 import (
 	"chest-xray/database"
 	"chest-xray/model"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetOBJModel(c *fiber.Ctx) error {
 	db := database.DB
-
-	if c.Body() == nil {
-		var models []model.OBJModel
-		if err := db.Find(&models).Error; err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Failed Selecting Data", "data": err})
-		}
-		return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Successful!", "data": models})
-	} else {
+	fmt.Printf("c.Body(): %v\n", c.Body())
+	if len(c.Body()) != 0 {
 		var obj model.OBJModel
 		if err := c.BodyParser(&obj); err != nil {
 			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Unprocessable Entity", "data": err})
@@ -26,6 +21,12 @@ func GetOBJModel(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Failed Selecting Data", "data": err})
 		}
 		return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Successful!", "data": obj})
+	} else {
+		var models []model.OBJModel
+		if err := db.Find(&models).Error; err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Failed Selecting Data", "data": err})
+		}
+		return c.JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Successful!", "data": models})
 	}
 }
 
