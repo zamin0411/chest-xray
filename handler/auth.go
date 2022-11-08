@@ -40,7 +40,7 @@ func Login(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 	type DoctorData struct {
-		ID       string `json:"ID"`
+		ID       string `json:"id"`
 		Username string `json:"username"`
 	}
 	input := new(LoginInput)

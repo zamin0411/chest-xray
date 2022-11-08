@@ -30,8 +30,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// OBJ Model
 	model := record.Group("/models")
-	model.Get("/:recordId", handler.GetOBJModel)
-
+	model.Get("/", handler.GetOBJModel)
 	model.Post("/", handler.SaveOBJModel)
 
 }

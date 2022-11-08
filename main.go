@@ -12,10 +12,9 @@ import (
 
 func main() {
 	app := fiber.New()
-
 	app.Use(cors.New())
-
 	database.Connect()
 	router.SetupRoutes(app)
-	log.Fatal(app.Listen(":8080"))
+	app.Static("/", "./files")
+	log.Fatal(app.Listen(":3000"))
 }
