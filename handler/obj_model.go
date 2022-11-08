@@ -3,9 +3,6 @@ package handler
 import (
 	"chest-xray/database"
 	"chest-xray/model"
-	"encoding/json"
-	"fmt"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -43,42 +40,42 @@ func SaveOBJModel(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode(), "message": "Failed Inserting Data", "data": err})
 	}
 
-	var v [][]float64
-	var f [][]int64
-	json.Unmarshal(model.V, &v)
-	json.Unmarshal(model.F, &f)
-	fileName := fmt.Sprintf("files/%s.obj", model.ID)
-	file, err := os.Create(fileName)
+	// var v [][]float64
+	// var f [][]int64
+	// json.Unmarshal(model.V, &v)
+	// json.Unmarshal(model.F, &f)
+	// fileName := fmt.Sprintf("files/%s.obj", model.ID)
+	// file, err := os.Create(fileName)
 
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode, "message": "Failed Creating File", "data": err})
-	}
-	defer file.Close()
-	for _, h := range v {
-		for j, c := range h {
-			if j == 0 {
-				fmt.Fprint(file, "v ")
-			}
-			if j == 2 {
-				fmt.Fprintln(file, c)
-			} else {
-				fmt.Fprintf(file, "%f ", c)
-			}
-		}
-	}
+	// if err != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"code": c.Response().StatusCode, "message": "Failed Creating File", "data": err})
+	// }
+	// defer file.Close()
+	// for _, h := range v {
+	// 	for j, c := range h {
+	// 		if j == 0 {
+	// 			fmt.Fprint(file, "v ")
+	// 		}
+	// 		if j == 2 {
+	// 			fmt.Fprintln(file, c)
+	// 		} else {
+	// 			fmt.Fprintf(file, "%f ", c)
+	// 		}
+	// 	}
+	// }
 
-	for _, h := range f {
-		for j, c := range h {
-			if j == 0 {
-				fmt.Fprint(file, "f ")
-			}
-			if j == 2 {
-				fmt.Fprintln(file, c)
-			} else {
-				fmt.Fprintf(file, "%d ", c)
-			}
-		}
-	}
+	// for _, h := range f {
+	// 	for j, c := range h {
+	// 		if j == 0 {
+	// 			fmt.Fprint(file, "f ")
+	// 		}
+	// 		if j == 2 {
+	// 			fmt.Fprintln(file, c)
+	// 		} else {
+	// 			fmt.Fprintf(file, "%d ", c)
+	// 		}
+	// 	}
+	// }
 
 	// postBody, _ := json.Marshal(model)
 	// responseBody := bytes.NewBuffer(postBody)
