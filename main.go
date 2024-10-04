@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	// Test
 	app := fiber.New()
 	app.Use(cors.New())
 	database.Connect()
