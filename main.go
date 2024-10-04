@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	// Test
+	// Test adsad
 	app := fiber.New()
 	app.Use(cors.New())
 	database.Connect()
